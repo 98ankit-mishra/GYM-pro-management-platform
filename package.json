@@ -1,0 +1,12 @@
+{
+  "name": "gym-management-system",
+  "private": true,
+  "version": "2.0.0",
+  "description": "Gym management system split into React frontend and Node/Express backend",
+  "scripts": {
+    "dev:frontend": "npm --prefix frontend run dev",
+    "dev:backend": "npm --prefix backend run dev",
+    "build:frontend": "npm --prefix frontend run build",
+    "start:backend": "npm --prefix backend run start"
+  }
+}

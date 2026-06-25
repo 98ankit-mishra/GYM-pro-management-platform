@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gym Pro | Workout Plans</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-top">
+        <div class="brand">
+          <div class="brand-mark">GF</div>
+          <div class="brand-copy">
+            <strong>GYM PRO</strong>
+            <span>MANAGEMENT</span>
+          </div>
+        </div>
+        <button class="icon-btn sidebar-close" id="sidebarClose" aria-label="Close menu">X</button>
+      </div>
+
+      <nav class="nav-list">
+        <button class="nav-item" data-view-target="dashboard">Dashboard</button>
+        <button class="nav-item" data-view-target="members">Members</button>
+        <button class="nav-item" data-view-target="plans">Plans</button>
+        <button class="nav-item" data-view-target="attendance">Attendance</button>
+        <button class="nav-item" data-view-target="billing">Billing</button>
+        <button class="nav-item active" data-view-target="workouts">Workouts</button>
+        <button class="nav-item" data-view-target="diet">Diet Plan</button>
+        <button class="nav-item" data-view-target="trainers">Trainers</button>
+        <button class="nav-item" data-view-target="staff">Staff</button>
+        <button class="nav-item" data-view-target="reports">Report</button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <p>SYSTEM STATUS</p>
+        <strong><span class="status-online-dot"></span>Online</strong>
+        <span id="todayDateLabel"></span>
+      </div>
+    </aside>
+
+    <div class="overlay" id="overlay"></div>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="icon-btn menu-toggle" id="menuToggle" aria-label="Open menu">Menu</button>
+          <div>
+            <h1 id="pageTitle">WORKOUT PLANS</h1>
+            <p id="pageSubtitle">Create and manage workout programs</p>
+          </div>
+        </div>
+        <div class="topbar-actions">
+          <input id="globalMemberSearch" type="search" placeholder="Search member by name">
+          <span class="user-chip" id="currentUserBadge">Guest</span>
+          <button class="secondary-btn" id="changePasswordBtn" type="button">Change Password</button>
+          <button class="secondary-btn" id="logoutBtn" type="button">Logout</button>
+          <button class="secondary-btn alert-btn" id="expiryAlertBtn" type="button">Alerts (0)</button>
+          <button class="primary-btn" id="quickAddMember">Add Member</button>
+        </div>
+      </header>
+
+      <section class="alert-banner hidden" id="expiryBanner">
+        <div>
+          <strong id="expiryBannerTitle">No active alerts</strong>
+          <p id="expiryBannerText">All plans are healthy.</p>
+        </div>
+        <button id="reviewExpiryAlerts" class="secondary-btn" type="button">Review Alerts</button>
+      </section>
+
+      <section class="view" id="dashboard">
+        <div class="metrics-grid">
+          <article class="metric-card">
+            <p>Total Members</p>
+            <h3 id="metricTotalMembers">0</h3>
+          </article>
+          <article class="metric-card">
+            <p>Active Members</p>
+            <h3 id="metricActiveMembers">0</h3>
+          </article>
+          <article class="metric-card">
+            <p>Today Attendance</p>
+            <h3 id="metricTodayAttendance">0</h3>
+          </article>
+          <article class="metric-card">
+            <p>Monthly Revenue</p>
+            <h3 id="metricMonthlyRevenue">₹0</h3>
+          </article>
+        </div>
+
+        <div class="dashboard-grid">
+          <article class="panel">
+            <div class="panel-head">
+              <h2>Recent Members</h2>
+              <span class="pill" id="recentMemberCount">0 records</span>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Plan</th>
+                    <th>Status</th>
+                    <th>Joined</th>
+                  </tr>
+                </thead>
+                <tbody id="recentMembersBody"></tbody>
+              </table>
+            </div>
+          </article>
+
+          <article class="panel">
+            <div class="panel-head">
+              <h2>Today Snapshot</h2>
+            </div>
+            <div class="snapshot-list">
+              <div class="snapshot-item">
+                <span>Present Now</span>
+                <strong id="snapshotPresent">0</strong>
+              </div>
+              <div class="snapshot-item">
+                <span>Absent Today</span>
+                <strong id="snapshotAbsent">0</strong>
+              </div>
+              <div class="snapshot-item">
+                <span>Active Trainers</span>
+                <strong id="snapshotTrainers">0</strong>
+              </div>
+              <div class="snapshot-item">
+                <span>Avg Attendance Rate</span>
+                <strong id="snapshotRate">0%</strong>
+              </div>
+              <div class="snapshot-item">
+                <span>Plan Alerts</span>
+                <strong id="snapshotPlanAlerts">0</strong>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="view" id="members">
+        <div class="split-grid">
+          <article class="panel">
+            <div class="panel-head">
+              <h2>Member Directory</h2>
+            </div>
+            <div class="toolbar">
+              <input id="memberSearch" type="search" placeholder="Search by name, phone, or email">
+              <select id="memberStatusFilter">
+                <option value="All">All Status</option>
+                <option value="Active">Active</option>
+                <option value="Frozen">Frozen</option>
+                <option value="Expired">Expired</option>
+                <option value="ExpiringSoon">Expiring Soon (7 Days)</option>
+                <option value="PlanExpired">Plan Expired</option>
+              </select>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Contact</th>
+                    <th>Plan</th>
+                    <th>Trainer</th>
+                    <th>Status</th>
+                    <th>Joined</th>
+                    <th>Expiry</th>
+                    <th>Plan Alert</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="membersBody"></tbody>
+              </table>
+            </div>
+          </article>
+
+          <article class="panel">
+            <div class="panel-head">
+              <h2>Add New Member</h2>
+            </div>
+            <form id="memberForm" class="form-grid">
+              <label>
+                Full Name
+                <input type="text" name="name" required placeholder="Member full name">
+              </label>
+              <label>
+                Phone
+                <input type="tel" name="phone" required placeholder="Phone number">
+              </label>
+              <label>
+                Email
+                <input type="email" name="email" placeholder="Email address">
+              </label>
+              <label>
+                Plan
+                <select name="planId" id="memberPlanSelect" required></select>
+              </label>
+              <label>
+                Trainer
+                <select name="trainerId" id="memberTrainerSelect">
+                  <option value="">No Trainer</option>
+                </select>
+              </label>
+              <label>
+                Join Date
+                <input type="date" name="joinDate" id="memberJoinDate">
+              </label>
+              <label>
+                Status
+                <select name="status">
+                  <option value="Active">Active</option>
+                  <option value="Frozen">Frozen</option>
+                  <option value="Expired">Expired</option>
+                </select>
+              </label>
+              <button type="submit" class="primary-btn full-width">Create Member</button>
+            </form>
+          </article>
+        </div>
+      </section>
+
+      <section class="view" id="plans">
+        <div class="split-grid">
+          <article class="panel">
+            <div class="panel-head">
+              <h2>Membership Plans</h2>
+            </div>
+            <div id="plansGrid" class="card-grid"></div>
+          </article>
+          <article class="panel">
+            <div class="panel-head">
+              <h2>Add Plan</h2>
+            </div>
+            <form id="planForm" class="form-grid">
+              <label>
+                Plan Name
+                <input type="text" name="name" required placeholder="e.g. Gold Monthly">
+              </label>
+              <label>
+                Duration (months)
+                <input type="number" name="durationMonths" min="1" required placeholder="1">
+              </label>
+              <label>
+                Price (INR)
+                <input type="number" name="price" min="0" required placeholder="49">
+              </label>
+              <label>
+                Features
+                <textarea name="features" rows="3" placeholder="Gym access, 2 PT sessions, etc"></textarea>
+              </label>
+              <button type="submit" class="primary-btn full-width">Add Plan</button>
+            </form>
+          </article>
+        </div>
+      </section>
+
+      <section class="view" id="attendance">
+        <div class="split-grid">
+          <article class="panel">
+            <div class="panel-head">
+              <h2>Daily Attendance</h2>
+              <input id="attendanceDate" type="date">
+            </div>
+            <div class="attendance-actions">
+              <button id="markAllPresent" class="secondary-btn">Mark All Active as Present</button>
+              <button id="clearDayAttendance" class="secondary-btn">Clear This Day</button>
+            </div>
+            <div id="attendanceList" class="attendance-list"></div>
+          </article>
+          <article class="panel">
+            <div class="panel-head">
+              <h2>Attendance Summary</h2>
+            </div>
+            <div class="snapshot-list">
+              <div class="snapshot-item">
+                <span>Selected Day Present</span>
+                <strong id="attendancePresentCount">0</strong>
+              </div>
+              <div class="snapshot-item">
+                <span>Selected Day Absent</span>
+                <strong id="attendanceAbsentCount">0</strong>
+              </div>
+              <div class="snapshot-item">
+                <span>Active Members</span>
+                <strong id="attendanceActiveMembers">0</strong>
+              </div>
+              <div class="snapshot-item">
+                <span>Attendance Rate</span>
+                <strong id="attendanceRate">0%</strong>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="view" id="billing">
+        <div class="split-grid">
+          <article class="panel">
+            <div class="panel-head">
+              <h2>Payment Ledger</h2>
+            </div>
+            <div class="snapshot-list billing-snapshot">
+              <div class="snapshot-item">
+                <span>Total Outstanding Dues</span>
+                <strong id="billingOutstandingTotal">₹0</strong>
+              </div>
+              <div class="snapshot-item">
+                <span>Collected This Month</span>
+                <strong id="billingCollectedMonth">₹0</strong>
+              </div>
+              <div class="snapshot-item">
+                <span>Pending Members</span>
+                <strong id="billingPendingMembers">0</strong>
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Member</th>
+                    <th>Amount</th>
+                    <th>Mode</th>
+                    <th>Reference</th>
+                    <th>Recorded By</th>
+                  </tr>
+                </thead>
+                <tbody id="paymentsBody"></tbody>
+              </table>
+            </div>
+          </article>
+          <article class="panel">
+            <div class="panel-head">
+              <h2>Record Payment</h2>
+            </div>
+            <form id="paymentForm" class="form-grid">
+              <label>
+                Member
+                <select name="memberId" id="paymentMemberSelect" required></select>
+              </label>
+              <label>
+                Amount (INR)
+                <input type="number" name="amount" min="1" required placeholder="2500">
+              </label>
+              <label>
+                Payment Mode
+                <select name="mode">
+                  <option value="UPI">UPI</option>
+                  <option value="Cash">Cash</option>
+                  <option value="Card">Card</option>
+                  <option value="Bank Transfer">Bank Transfer</option>
+                </select>
+              </label>
+              <label>
+                Payment Date
+                <input type="date" name="date" id="paymentDate">
+              </label>
+              <label>
+                Reference / UTR
+                <input type="text" name="reference" placeholder="Transaction reference">
+              </label>
+              <label>
+                Notes
+                <textarea name="note" rows="2" placeholder="Optional payment notes"></textarea>
+              </label>
+              <label class="checkbox-line">
+                <input type="checkbox" name="autoRenew" checked>
+                Auto renew plan if due is fully paid
+              </label>
+              <button type="submit" class="primary-btn full-width">Save Payment</button>
+            </form>
+          </article>
+        </div>
+      </section>
+
+      <section class="view active" id="workouts">
+        <article class="workouts-shell">
+          <header class="workouts-head">
+            <div>
+              <h2>WORKOUT PLANS</h2>
+              <p>Create and manage workout programs</p>
+            </div>
+            <button class="danger-btn" id="openWorkoutComposer" type="button">+ ADD PLAN</button>
+          </header>
+
+          <form id="workoutForm" class="workout-form hidden" autocomplete="off">
+            <label>
+              Plan Name
+              <input type="text" name="name" required placeholder="Strength Builder">
+            </label>
+            <label>
+              Level
+              <select name="level">
+                <option value="Beginner">Beginner</option>
+                <option value="Intermediate">Intermediate</option>
+                <option value="Advanced">Advanced</option>
+              </select>
+            </label>
+            <label>
+              Days / Week
+              <input type="number" name="daysPerWeek" min="1" max="7" required placeholder="4">
+            </label>
+            <label class="wide">
+              Focus
+              <textarea name="focus" rows="3" placeholder="Write a short focus summary"></textarea>
+            </label>
+            <button type="submit" class="danger-btn">Save Plan</button>
+          </form>
+
+          <div id="workoutGrid" class="workout-list"></div>
+        </article>
+      </section>
+
+      <section class="view" id="diet">
+        <div class="split-grid">
+          <article class="panel">
+            <div class="panel-head">
+              <h2>Diet Plans</h2>
+            </div>
+            <div id="dietGrid" class="card-grid"></div>
+          </article>
+          <article class="panel">
+            <div class="panel-head">
+              <h2>Add Diet Plan</h2>
+            </div>
+            <form id="dietForm" class="form-grid">
+              <label>
+                Plan Name
+                <input type="text" name="name" required placeholder="Lean Gain Meal Plan">
+              </label>
+              <label>
+                Goal
+                <select name="goal">
+                  <option value="Weight Loss">Weight Loss</option>
+                  <option value="Muscle Gain">Muscle Gain</option>
+                  <option value="Maintenance">Maintenance</option>
+                </select>
+              </label>
+              <label>
+                Calories / Day
+                <input type="number" name="calories" min="900" required placeholder="2200">
+              </label>
+              <label>
+                Notes
+                <textarea name="notes" rows="3" placeholder="High protein, moderate carbs, hydration target"></textarea>
+              </label>
+              <button type="submit" class="primary-btn full-width">Add Diet Plan</button>
+            </form>
+          </article>
+        </div>
+      </section>
+
+      <section class="view" id="trainers">
+        <div class="split-grid">
+          <article class="panel">
+            <div class="panel-head">
+              <h2>Trainer List</h2>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Specialty</th>
+                    <th>Phone</th>
+                    <th>Assigned Members</th>
+                  </tr>
+                </thead>
+                <tbody id="trainersBody"></tbody>
+              </table>
+            </div>
+          </article>
+          <article class="panel">
+            <div class="panel-head">
+              <h2>Add Trainer</h2>
+            </div>
+            <form id="trainerForm" class="form-grid">
+              <label>
+                Trainer Name
+                <input type="text" name="name" required placeholder="Trainer full name">
+              </label>
+              <label>
+                Specialty
+                <input type="text" name="specialty" required placeholder="Strength, HIIT, Rehab, Yoga">
+              </label>
+              <label>
+                Phone
+                <input type="tel" name="phone" required placeholder="Phone number">
+              </label>
+              <button type="submit" class="primary-btn full-width">Add Trainer</button>
+            </form>
+          </article>
+        </div>
+      </section>
+
+      <section class="view" id="staff">
+        <div class="split-grid">
+          <article class="panel">
+            <div class="panel-head">
+              <h2>Staff Accounts</h2>
+              <span class="pill" id="staffCount">0 accounts</span>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Username</th>
+                    <th>Role</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="staffBody"></tbody>
+              </table>
+            </div>
+            <p class="empty" id="staffEmpty">No staff accounts yet.</p>
+          </article>
+
+          <article class="panel">
+            <div class="panel-head">
+              <h2>Add Staff</h2>
+            </div>
+            <form id="staffForm" class="form-grid">
+              <label>
+                Role
+                <select name="role" required>
+                  <option value="receptionist">Receptionist</option>
+                  <option value="trainer">Trainer</option>
+                </select>
+              </label>
+              <label>
+                Full Name
+                <input type="text" name="name" required placeholder="Staff full name">
+              </label>
+              <label>
+                Username
+                <input type="text" name="username" required placeholder="Unique username">
+              </label>
+              <label>
+                Password
+                <input type="password" name="password" required placeholder="Set a password (min 6 chars)">
+              </label>
+              <button type="submit" class="primary-btn full-width">Create Staff Account</button>
+            </form>
+            <p class="empty">Only the gym owner can manage staff accounts.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="view" id="reports">
+        <div class="dashboard-grid reports-grid">
+          <article class="panel">
+            <div class="panel-head">
+              <h2>Monthly Overview</h2>
+            </div>
+            <div class="snapshot-list">
+              <div class="snapshot-item">
+                <span>Expected Revenue</span>
+                <strong id="reportRevenue">₹0</strong>
+              </div>
+              <div class="snapshot-item">
+                <span>Avg Daily Attendance</span>
+                <strong id="reportDailyAttendance">0</strong>
+              </div>
+              <div class="snapshot-item">
+                <span>Current Active Plans</span>
+                <strong id="reportActivePlans">0</strong>
+              </div>
+              <div class="snapshot-item">
+                <span>Total Trainers</span>
+                <strong id="reportTrainerCount">0</strong>
+              </div>
+              <div class="snapshot-item">
+                <span>Outstanding Dues</span>
+                <strong id="reportOutstandingDues">₹0</strong>
+              </div>
+            </div>
+          </article>
+          <article class="panel">
+            <div class="panel-head">
+              <h2>Weekly Attendance Trend</h2>
+            </div>
+            <div id="attendanceBars" class="bar-chart"></div>
+          </article>
+          <article class="panel">
+            <div class="panel-head">
+              <h2>Reminder Workflow</h2>
+            </div>
+            <div class="reminder-actions">
+              <button id="generateWhatsappReminders" class="secondary-btn" type="button">Generate WhatsApp</button>
+              <button id="generateSmsReminders" class="secondary-btn" type="button">Generate SMS</button>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Member</th>
+                    <th>Channel</th>
+                    <th>Status</th>
+                    <th>Message</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="remindersBody"></tbody>
+              </table>
+            </div>
+          </article>
+          <article class="panel">
+            <div class="panel-head">
+              <h2>Exports</h2>
+            </div>
+            <div class="export-actions">
+              <button id="exportMembersCsv" class="secondary-btn" type="button">Export Members CSV</button>
+              <button id="exportPaymentsCsv" class="secondary-btn" type="button">Export Payments CSV</button>
+              <button id="exportExpiryCsv" class="secondary-btn" type="button">Export Expiry Alerts CSV</button>
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="auth-layer" id="authLayer">
+    <form class="auth-card" id="loginForm">
+      <h2>Gym Pro Login</h2>
+      <p>Sign in to access secure gym records.</p>
+      <label>
+        Username
+        <input type="text" name="username" required placeholder="Enter username">
+      </label>
+      <label>
+        Password
+        <input type="password" name="password" required placeholder="Enter password">
+      </label>
+      <button type="submit" class="primary-btn full-width">Login</button>
+      <button type="button" class="secondary-btn full-width" id="showSignupBtn">Create owner account</button>
+      <small id="authLoginHint">First time? Create the owner account to get started.</small>
+    </form>
+
+    <form class="auth-card hidden" id="signupForm">
+      <h2>Create Owner Account</h2>
+      <p>This will create the first admin account for this gym.</p>
+      <label>
+        Owner Name
+        <input type="text" name="name" placeholder="Gym Owner">
+      </label>
+      <label>
+        Username
+        <input type="text" name="username" required placeholder="Choose a username">
+      </label>
+      <label>
+        Password
+        <input type="password" name="password" required placeholder="Create a password">
+      </label>
+      <button type="submit" class="primary-btn full-width">Create Account</button>
+      <button type="button" class="secondary-btn full-width" id="showLoginBtn">Back to login</button>
+      <small>After creating the account, you will be logged in automatically.</small>
+    </form>
+  </div>
+
+  <script src="./app.js"></script>
+</body>
+</html>
