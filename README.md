@@ -1,137 +1,316 @@
-# Gym Management System
+# 🏋️ Gym Management System
 
-This project is now split into:
+A full-stack **Gym Management System** built using **React, Node.js, Express.js, and MongoDB**. The application helps gym owners and staff efficiently manage members, trainers, attendance, memberships, billing, workout plans, diet plans, reports, and reminder workflows through a centralized dashboard.
 
-- `frontend/` for the React app
-- `backend/` for the Node.js + Express API
-- MongoDB as the database layer
+---
 
-Your previous single-file frontend has been preserved in `frontend/legacy/` so it can be migrated into React gradually.
+## 🚀 Features
 
-## Project Structure
+### 👥 Member Management
+
+* Add, edit, and delete members
+* Assign membership plans and trainers
+* Activate, freeze, renew memberships
+* Member check-in functionality
+
+### 📋 Plan Management
+
+* Create, update, and delete membership plans
+* Manage plan pricing and duration
+
+### 🏋️ Trainer Management
+
+* Add, edit, and remove trainers
+* Assign trainers to members
+
+### 🥗 Diet Plan Management
+
+* Create and manage diet plans
+* Assign diet plans to members
+
+### 💪 Workout Plan Management
+
+* Create and manage workout routines
+* Assign workout plans to members
+
+### 📅 Attendance Tracking
+
+* Daily attendance management
+* Mark all members present
+* Clear attendance records
+
+### 💳 Billing & Payments
+
+* Record member payments
+* Track pending dues
+* View monthly revenue statistics
+
+### 👨‍💼 Staff Management
+
+* Role-based access control
+* Owner, Receptionist, and Trainer roles
+* Create and manage staff accounts
+* Activate/Deactivate users
+* Password reset functionality
+
+### 📊 Reports & Reminders
+
+* Revenue analytics
+* Attendance insights
+* Membership expiry reminders
+* Delivery log tracking
+* CSV export support
+
+### 🎨 User Experience
+
+* Light/Dark theme toggle
+* Preference persistence across sessions
+
+---
+
+## 🛠️ Tech Stack
+
+### Frontend
+
+* React.js
+* Vite
+* CSS
+
+### Backend
+
+* Node.js
+* Express.js
+* MongoDB
+* Mongoose
+
+---
+
+## 📁 Project Structure
 
 ```text
-gym management system/
-  frontend/
-    src/
-    legacy/
-  backend/
-    src/
-    data/
-    .env.example
+gym-management-system/
+│
+├── frontend/
+│   ├── src/
+│   └── legacy/
+│
+├── backend/
+│   ├── src/
+│   ├── test/
+│   ├── data/
+│   └── .env.example
+│
+└── README.md
 ```
 
-## Setup
+---
 
-Install dependencies separately for each app:
+## ⚙️ Installation & Setup
+
+### 1. Clone the Repository
+
+```bash
+git clone <repository-url>
+cd gym-management-system
+```
+
+### 2. Install Dependencies
 
 ```bash
 npm install --prefix frontend
 npm install --prefix backend
 ```
 
-Create your backend environment file:
+### 3. Configure Environment Variables
+
+Create a `.env` file inside the backend directory:
 
 ```bash
-copy backend\\.env.example backend\\.env
+copy backend\.env.example backend\.env
 ```
 
-Update `backend/.env` if your MongoDB connection string, frontend URL, or cookie settings are different.
+Update the values according to your setup.
 
-## Notification Setup
+---
 
-The reminders feature supports two modes:
-
-- `console` mode for safe local testing
-- live provider mode for real SMS and WhatsApp delivery
-
-By default, `backend/.env.example` is configured for `console` mode. In this mode:
-
-- reminder drafts can be created
-- provider status is visible in the Reports screen
-- "Send Now" works through the app flow, but uses sandbox providers for development/testing
-
-### SMS Options
-
-Use console mode:
+## 🔑 Environment Variables
 
 ```env
+PORT=3000
+FRONTEND_URL=http://localhost:5173
+
+MONGODB_URI=mongodb://127.0.0.1:27017/gympro
+
+COOKIE_SECURE=false
+SESSION_COOKIE_NAME=gympro_session
+SESSION_TTL_MS=43200000
+
+AUTH_RATE_LIMIT_MAX=20
+AUTH_RATE_LIMIT_WINDOW_MS=900000
+
 REMINDER_SMS_PROVIDER=console
-```
-
-Use Twilio SMS:
-
-```env
-REMINDER_SMS_PROVIDER=twilio
-REMINDER_SMS_FROM=+1234567890
-REMINDER_TWILIO_ACCOUNT_SID=your_account_sid
-REMINDER_TWILIO_AUTH_TOKEN=your_auth_token
+REMINDER_SMS_FROM=
+REMINDER_TWILIO_ACCOUNT_SID=
+REMINDER_TWILIO_AUTH_TOKEN=
 REMINDER_TWILIO_MESSAGING_SERVICE_SID=
-```
 
-Notes:
-
-- Either `REMINDER_SMS_FROM` or `REMINDER_TWILIO_MESSAGING_SERVICE_SID` must be set for Twilio
-- If you use a messaging service, you can leave `REMINDER_SMS_FROM` blank
-
-### WhatsApp Options
-
-Use console mode:
-
-```env
 REMINDER_WHATSAPP_PROVIDER=console
+REMINDER_WHATSAPP_ACCESS_TOKEN=
+REMINDER_WHATSAPP_PHONE_NUMBER_ID=
 ```
 
-Use Meta WhatsApp Cloud API:
+---
 
-```env
-REMINDER_WHATSAPP_PROVIDER=meta-cloud
-REMINDER_WHATSAPP_ACCESS_TOKEN=your_access_token
-REMINDER_WHATSAPP_PHONE_NUMBER_ID=your_phone_number_id
-```
+## 🔔 Notification Support
 
-### What The App Does
+The system supports reminder notifications through multiple providers.
 
-- `Create WhatsApp Drafts` and `Create SMS Drafts` generate reminder records in the database
-- `Send Now` sends a pending reminder through the configured provider
-- delivery metadata such as provider, external id, sent time, and actor are stored and shown in Reports
+### SMS Notifications
 
-### Recommended Local Flow
+* Console Mode (Development)
+* Twilio SMS (Production)
 
-1. Keep both providers in `console` mode while building features
-2. Verify reminder generation and delivery logs in the Reports screen
-3. Switch one provider at a time to live mode when credentials are ready
-4. Re-test using a small set of real numbers before broader usage
+### WhatsApp Notifications
 
-## Run
+* Console Mode (Development)
+* Meta WhatsApp Cloud API (Production)
 
-Start the backend:
+---
+
+## ▶️ Running the Application
+
+### Start Backend Server
 
 ```bash
 npm run dev:backend
 ```
 
-Start the frontend in another terminal:
+### Start Frontend Server
 
 ```bash
 npm run dev:frontend
 ```
 
-Open the React app at:
+### Application URLs
 
-```text
-http://localhost:5173
+| Service  | URL                   |
+| -------- | --------------------- |
+| Frontend | http://localhost:5173 |
+| Backend  | http://localhost:3000 |
+
+---
+
+## 📜 Available Scripts
+
+### Root Commands
+
+```bash
+npm run dev:frontend
+npm run dev:backend
+npm run build:frontend
+npm run start:backend
 ```
 
-The backend API runs at:
+### Frontend
 
-```text
-http://localhost:3000
+```bash
+npm test
+npm run build
 ```
 
-## Notes
+### Backend
 
-- The backend contains the Express + MongoDB API used by the React frontend.
-- If `frontend/dist` exists, the backend can serve the built frontend automatically.
-- Legacy import is optional: if you place an old JSON export at `backend/data/db.json`, the backend will import it on first boot.
-- Integration tests cover auth, state persistence, trainer permissions, and reminder delivery flow.
+```bash
+npm test
+npm run dev
+npm run start
+npm run reset:users
+```
+
+---
+
+## 🔐 User Roles
+
+### 👑 Owner
+
+* Full system access
+* Manage staff accounts
+* Manage members, trainers, plans, billing, workouts, and diets
+* Access reports and analytics
+
+### 🧑‍💼 Receptionist
+
+* Manage day-to-day gym operations
+* Handle memberships and attendance
+* Manage billing and reminders
+
+### 🏋️ Trainer
+
+* Attendance-focused access
+* Limited operational permissions
+* Member workout monitoring
+
+---
+
+## 📈 Reports & Reminder Workflow
+
+The system provides:
+
+* Membership expiry tracking
+* Reminder draft generation
+* Reminder delivery through configured providers
+* Revenue reports
+* Attendance reports
+* Delivery log visibility including:
+
+  * Provider
+  * External ID
+  * Sent Time
+  * Sent By
+
+---
+
+## 🧪 Testing
+
+Backend includes:
+
+* Validation Tests
+* Session Tests
+* Authentication Flow Tests
+* State Persistence Tests
+* Trainer Permission Tests
+* Reminder Sending Workflow Tests
+
+### Run Tests
+
+```bash
+npm test --prefix backend
+npm test --prefix frontend
+```
+
+---
+
+## 🔮 Future Enhancements
+
+* Bulk Member Import/Export
+* Advanced Analytics Dashboard
+* Payment Receipt Generation
+* Personal Training Session Scheduling
+* Mobile-Friendly Member Cards
+* Notification Retry & History Dashboard
+
+---
+
+## 📄 License
+
+This project is intended for **learning, educational, and development purposes only**.
+
+---
+
+## 👨‍💻 Author
+
+**Ankit Mishra**
+
+B.Tech (CSE-AIML) | Full Stack Developer
+
+Tech Stack: React, Node.js, Express.js, MongoDB
